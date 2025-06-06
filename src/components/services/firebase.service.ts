@@ -12,4 +12,12 @@ export class FirebaseService {
             })
         })
     }
+
+    async verifyToken(token: string) {
+        try {
+            return await admin.auth().verifyIdToken(token);
+        }catch (error){
+            throw new Error('Invalid or expired token')
+        }
+    }
 }
