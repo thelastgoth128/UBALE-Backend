@@ -8,52 +8,84 @@ export class User {
     @Column()
     name : string
 
-    @Column()
+    @Column({
+        nullable:true
+    })
     email : string
 
-    @Column()
+    @Column({
+        nullable:true
+    })
     password : string
 
-    @Column()
+    @Column({
+        nullable:true
+    })
     location : string
 
-    @Column()
+    @Column({
+        nullable:true
+    })
     age : number
 
-    @Column()
+    @Column({
+        nullable:true
+    })
     bio : string
 
-    @Column()
+    @Column({
+        nullable:true
+    })
     distance : string
 
-    @Column()
+    @Column({
+        nullable:true
+    })
     education : string
 
-    @Column()
+    @Column({
+        nullable:true
+    })
     gender : string
 
-    @Column()
+    @Column({
+        nullable:true
+    })
     height : string
 
-    @Column()
+    @Column({
+        nullable:true
+    })
     hobbies : string
 
-    @Column()
+    @Column({
+        nullable:true
+    })
     languages : string
 
-    @Column()
+    @Column({
+        nullable:true
+    })
     interest : string
 
-    @Column()
+    @Column({
+        nullable:true
+    })
     lifesytle : string
 
-    @Column()
+    @Column({
+        nullable:true
+    })
     occupation : string
 
-    @Column()
+    @Column({
+        nullable:true
+    })
     phone : number
 
-    @Column()
+    @Column({
+        nullable:true
+    })
     profilepic : string
 
 }

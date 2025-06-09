@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { response } from 'express';
+import { FirebaseService } from '../services/firebase.service';
 
 @Injectable()
 export class UserService {
@@ -21,18 +22,20 @@ export class UserService {
       throw new ForbiddenException('phone already exists, please login')
     }
     const user = await this.userrep.save(createUserDto);
-    
-    return response.status(200).json({
-      message : "Successfully created user"
-    })
+
+    return {
+      statusCode:200,
+      message:"Successfully created user",
+      user,
+    }
   }
 
   findAll() {
-    return `This action returns all user`;
+    return this.userrep.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number) {
+    return await this.userrep.findOne({where: {phone:id}});
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
