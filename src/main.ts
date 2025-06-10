@@ -11,7 +11,9 @@ async function bootstrap() {
 
   app.useGlobalGuards(new AuthGuard(firebaseService, reflector));
 
-  const PORT = (process.env.PORT) || 10000;
-  await app.listen(PORT);
+  const port = process.env.PORT || 4000;
+  await app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`)
+  });
 }
 bootstrap();
