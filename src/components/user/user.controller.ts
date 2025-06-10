@@ -3,7 +3,6 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt'
-import { AuthGuard } from '../auth/guards/auth.guard';
 
 @Controller('user')
 export class UserController {
