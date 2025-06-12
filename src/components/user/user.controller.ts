@@ -8,6 +8,7 @@ import * as bcrypt from 'bcrypt'
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Public()
   @Post('create')
   async create(@Body() createUserDto: CreateUserDto) {
     const hash = await bcrypt.hash(createUserDto.password, 12)
