@@ -3,13 +3,11 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt'
-import { Public } from "./src/components/auth/guards/public";
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Public()
   @Post('create')
   async create(@Body() createUserDto: CreateUserDto) {
     const hash = await bcrypt.hash(createUserDto.password, 12)
