@@ -13,6 +13,7 @@ export class AuthController {
   signIn(@Body() signInDto:Record<string,any>){
     return this.authService.signIn(signInDto.phone,signInDto.password)
   }
+  
 
   @Get()
   findAll() {
