@@ -100,3 +100,5 @@ export class AuthService {
     return `This action removes a #${id} auth`;
   }
 }
+
+const otpStore = new Map()
