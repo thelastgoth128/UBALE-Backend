@@ -18,13 +18,69 @@ export class AuthService {
   ){}
 
   async signIn(phone : number, pass: string) {
+    try{
     const user = await this.userService.findOne(phone)
 
     if (!user){
       throw new BadRequestException('wrong credentials')
     }
-    if(!await bcrypt.compare(pass, user.password)){
-      throw new BadGatewayException('wrong credentials')
+    const firebaseAuth = admin.auth()
+    const userRecord = await firebaseAuth.getUserByPhoneNumber(phone.toString())
+
+    if (!userRecord) {
+      throw new BadRequestException('wrong credentials')
+    }
+
+    const customToken = await firebaseAuth.createCustomToken(userRecord.uid);
+
+    return {
+        access_token: customToken,
+        data: {
+          userid: userRecord.uid,
+          phone: userRecord.phoneNumber,
+          name: user.name,
+          location: user.location,
+
+        }
+      } 
+    }catch (error) {
+      throw new BadRequestException('Authentication failed')
+    }
+  }
+
+  generateOTP() {
+    return crypto.randomInt(100000, 999999).toString()
+  }
+
+  async sendOTP(phoneNumber: string, otp: string) {
+    const accountSid = 'Ubale';
+    const authToken = 'your_twilio_auth_token';
+    const client = twilio(accountSid, authToken);
+  
+    try {
+      await client.messages.create({
+        body: `Your OTP code is ${otp}`,
+        from: 'Ubale',
+        to: phoneNumber
+      })
+    }catch (error) {
+      console.error("Error sending OTP:", error)
+    }
+  }
+
+  storeOTP(phoneNumber:string, otp:string) {
+    otpStore.set(phoneNumber, otp)
+    setTimeout(()=> otpStore.delete(phoneNumber), 300000)
+  }
+
+  verifyOTP(phoneNumber: string, enteredOTP: string) {
+    const storedOTP = otpStore.get(phoneNumber)
+    if (storedOTP && storedOTP === enteredOTP) {
+      console.log("OTP verified successfully")
+      return true;
+    }else {
+      console.log("Invalid OTP:")
+      return false;
     }
   }
 
