@@ -5,7 +5,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { UserService } from '../user/user.service';
-import * as bcrypt from 'bcrypt'
+import crypto from 'crypto'
+import twilio from 'twilio'
+import * as admin from 'firebase-admin'
 
 @Injectable()
 export class AuthService {
