@@ -52,10 +52,12 @@ export class AuthService {
     return crypto.randomInt(100000, 999999).toString()
   }
 
-  async sendOTP(phoneNumber: string, otp: string) {
+  async sendOTP(phoneNumber: string) {
     const accountSid = 'Ubale';
     const authToken = 'your_twilio_auth_token';
     const client = twilio(accountSid, authToken);
+    const otp = this.generateOTP()
+    this.storeOTP(phoneNumber,otp)
   
     try {
       await client.messages.create({
@@ -75,7 +77,11 @@ export class AuthService {
 
   verifyOTP(phoneNumber: string, enteredOTP: string) {
     const storedOTP = otpStore.get(phoneNumber)
-    if (storedOTP && storedOTP === enteredOTP) {
+    if (!storedOTP) {
+      console.log("No OTP fund for this number")
+      return false
+    }
+    if (storedOTP === enteredOTP) {
       console.log("OTP verified successfully")
       return true;
     }else {
