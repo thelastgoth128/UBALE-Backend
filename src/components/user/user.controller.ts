@@ -2,7 +2,6 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@n
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import * as bcrypt from 'bcrypt'
 
 @Controller('user')
 export class UserController {
@@ -10,8 +9,6 @@ export class UserController {
 
   @Post('create')
   async create(@Body() createUserDto: CreateUserDto) {
-    const hash = await bcrypt.hash(createUserDto.password, 12)
-    createUserDto.password = hash
     return await this.userService.create(createUserDto);
   }
 
