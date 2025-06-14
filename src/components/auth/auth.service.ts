@@ -8,16 +8,18 @@ import { UserService } from '../user/user.service';
 import crypto from 'crypto'
 import twilio from 'twilio'
 import * as admin from 'firebase-admin'
+import { MailService } from '../services/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userrep : Repository<User>,
-    private readonly userService : UserService,
+    private userService : UserService,
+    private mailService : MailService
   ){}
 
-  async signIn(phone : number, pass: string) {
+  async signIn(phone : string, pass: string) {
     try{
       const user = await this.userService.findNumber(phone)
 
@@ -89,6 +91,34 @@ export class AuthService {
       return false;
     }
   }
+
+  async forgotPassword(email: string) {
+    const user = await this.userService.findMail(email)
+
+    if (user) {
+      const otp = this.generateOTP()
+      this.storeOTP(user.phone,otp)
+
+      await this.mailService.sendOTPMail(email,otp)
+    }
+    return{
+      message: 'if the user exists, they will receive an email'
+    }
+  }
+
+  async resetPassword(firebaseUid: string, newPassword: string) {
+    try {
+      await admin.auth().updateUser(firebaseUid, {
+        password: newPassword
+      });
+      return {
+        message: 'Password has been successfully reset'
+      }
+    }catch(error) {
+      throw new Error(`Failed to reset password: ${error.message}`)
+    }
+  }
+
  
   findAll() {
     return `This action returns all auth`;
