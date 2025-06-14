@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { response } from 'express';
 import { FirebaseService } from '../services/firebase.service';
+import * as admin from 'firebase-admin'
 
 @Injectable()
 export class UserService {
@@ -15,13 +16,25 @@ export class UserService {
   ){}
 
   async create(createUserDto: CreateUserDto) {
-    const {phone, name } = createUserDto;
+    const {phone, name, email, ...userData } = createUserDto;
 
     const exists = await this.userrep.findOne({where : {phone}})
     if (exists) {
       throw new ForbiddenException('phone already exists, please login')
     }
-    const user = await this.userrep.save(createUserDto);
+    const firebaseUser = await admin.auth().createUser({
+      phoneNumber: phone,
+      email: email,
+      displayName: name,
+    })
+
+    const user = await this.userrep.save({
+      ...userData,
+      phone,
+      name,
+      email,
+      firebase_uid : firebaseUser.uid
+    })
 
     return {
       statusCode:200,
@@ -40,8 +53,12 @@ export class UserService {
     return await this.userrep.findOne({where: {userid:id}});
   }
 
-  async findNumber(phone : number) {
+  async findNumber(phone : string) {
     return await this.userrep.findOne({where: {phone}})
+  }
+
+  async findMail(email :string) {
+    return await this.userrep.findOne({where: {email}})
   }
 
   async update(userid: number, updateUserDto: UpdateUserDto) {
