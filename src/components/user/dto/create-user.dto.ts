@@ -1,4 +1,4 @@
-import { IsArray, IsEmail, IsInt, IsString, IsStrongPassword } from "class-validator";
+import { IsArray, IsEmail, IsInt, IsString, } from "class-validator";
 
 
 export class CreateUserDto {
@@ -8,8 +8,8 @@ export class CreateUserDto {
     @IsEmail()
     email : string
 
-    @IsStrongPassword()
-    password : string
+    @IsString()
+    firebase_uid : string
 
     @IsString()
     location : string
@@ -48,7 +48,7 @@ export class CreateUserDto {
     occupation : string
 
     @IsInt()
-    phone : number
+    phone : string
 
     @IsArray()
     photos : string[]

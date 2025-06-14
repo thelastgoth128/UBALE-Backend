@@ -16,7 +16,7 @@ export class User {
     @Column({
         nullable:true
     })
-    password : string
+    firebase_uid : string
 
     @Column({
         nullable:true
@@ -81,7 +81,7 @@ export class User {
     @Column({
         nullable:true
     })
-    phone : number
+    phone : string
 
     @Column({
         nullable:true
