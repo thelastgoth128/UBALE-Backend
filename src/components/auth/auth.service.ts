@@ -18,8 +18,12 @@ export class AuthService {
   ){}
 
   async signIn(phone : number, pass: string) {
+<<<<<<< HEAD
     try{
       const user = await this.userService.findOne(phone)
+=======
+    const user = await this.userService.findNumber(phone)
+>>>>>>> 6e5a9bf (get methods and patch function)
 
     if (!user){
       throw new BadRequestException('wrong credentials')

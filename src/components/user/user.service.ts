@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -31,18 +31,51 @@ export class UserService {
   }
 
   findAll() {
-    return this.userrep.find();
+    return this.userrep.find({select: [
+      'userid','email','location','distance','age','bio','education','gender','height','hobbies','interest','languages','lifesytle','name','occupation','phone'
+    ]});
   }
 
   async findOne(id: number) {
-    return await this.userrep.findOne({where: {phone:id}});
+    return await this.userrep.findOne({where: {userid:id}});
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async findNumber(phone : number) {
+    return await this.userrep.findOne({where: {phone}})
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async update(userid: number, updateUserDto: UpdateUserDto) {
+    const user = await this.userrep.findOne({where: {userid}})
+
+    if (!user) {
+      throw new NotFoundException('user not found')
+    }
+    Object.assign(user,updateUserDto)
+
+    return await this.userrep.save(user);
+  }
+
+  async remove(userid: number) {
+    try {
+      const user = await this.userrep.findOne({where: {userid}})
+
+      if (!user) {
+        throw new NotFoundException('User not found')
+      }
+
+      await this.userrep.delete(user)
+
+      return {
+        statusCode: 200,
+        message:'Successfully deleted Account',
+
+      }
+    }catch(error) {
+      return {
+        statusCode: 500,
+        message: 'Internal server error',
+        error: error.message
+      }
+    }
   }
 }
