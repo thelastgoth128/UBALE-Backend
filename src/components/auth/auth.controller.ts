@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
+import { CreateAuthDto, ForgotPasswordDto, SignInDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { Public } from "./guards/public";
 import { UserService } from '../user/user.service';
@@ -14,11 +14,11 @@ export class AuthController {
   ) {}
 
   @Post('login')
-  signIn(@Body() signInDto:Record<string,any>){
+  signIn(@Body() signInDto:SignInDto){
     return this.authService.signIn(signInDto.phone,signInDto.password)
   }
   @Post('forgot-password')
-  forgotPassword(@Body() forgotPasswordDto:Record<string,any>) {
+  forgotPassword(@Body() forgotPasswordDto:ForgotPasswordDto) {
     return this.authService.forgotPassword(forgotPasswordDto.email)
   }
 
